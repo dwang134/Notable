@@ -4,18 +4,19 @@ import {useToast } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import { FormEvent, useRef, useState } from 'react';
 import {NoteData, Tag} from '../types/Types';
-
+import { useNoteContext } from '../context/NoteContext';
 
 type NoteFormProps = {
   onSubmit: (data: NoteData) => void;
 }
 
-const NoteForm: React.FC = ({onSubmit}: NoteFormProps) => {
+const NoteForm: React.FC = () => {
 
   const titleRef = useRef<HTMLInputElement>(null);
   const markdownRef= useRef<HTMLTextAreaElement>(null);
   const toast = useToast();
   const [selectedTags, setSelectedTags] = useState<Tag []>([]);
+  const {onCreateNote} = useNoteContext();
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -27,9 +28,9 @@ const NoteForm: React.FC = ({onSubmit}: NoteFormProps) => {
           isClosable: true,
         })
     }else{
-      onSubmit({
+      onCreateNote({
         title: titleRef.current.value,
-        tag: [],
+        tags: [],
         content: markdownRef.current.value
       })
     }
@@ -42,7 +43,7 @@ const NoteForm: React.FC = ({onSubmit}: NoteFormProps) => {
           <Stack direction={["column", "row"]} spacing="24px">
             <Flex direction="column" w="55%">
               <FormLabel>Title</FormLabel>
-              <Input size="md" height="38px" isRequired ref={titleRef}/>
+              <Input size="md" height="38px" borderColor='blackAlpha.400' isRequired ref={titleRef}/>
             </Flex>
             <Flex direction="column" w="45%">
               <FormLabel>Tags</FormLabel>
@@ -63,7 +64,7 @@ const NoteForm: React.FC = ({onSubmit}: NoteFormProps) => {
             </Flex>
           </Stack>
           <FormLabel>Body</FormLabel>
-          <Textarea height="28rem" ref={markdownRef} placeholder="Enter the content for the notes here!" />
+          <Textarea borderColor='blackAlpha.400' height="28rem" ref={markdownRef} placeholder="Enter the content for the notes here!" />
           <Flex justifyContent="flex-end">
             <ButtonGroup gap="2" mt={1}>
               <Button colorScheme="messenger">Save</Button>

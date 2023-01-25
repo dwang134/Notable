@@ -12,6 +12,7 @@ import NewNote from '../pages/create/NewNote';
 import ViewNote from '../pages/view/ViewNote';
 import EditNote from '../pages/view/edit/EditNote';
 import { ChakraProvider } from '@chakra-ui/react';
+import {NoteContextProvider} from '../context/NoteContext';
 
 const router = createBrowserRouter([
   {
@@ -22,7 +23,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/new",
-    element: <NewNote/>
+    element: <NewNote />
   },
   {
     path: "/:noteID",
@@ -32,11 +33,10 @@ const router = createBrowserRouter([
     path: "/:noteID/edit",
     element: <EditNote/>
   },
-  // {
-  //   path: '*',
-  //   element: <Navigate to='/'/>
-  // }
-
+  {
+    path: '*',
+    element: <Navigate to='/'/>
+  }
 ]);
 
 
@@ -44,7 +44,9 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <ChakraProvider>
   <React.StrictMode>
-    <RouterProvider router={router}/>
+    <NoteContextProvider>
+      <RouterProvider router={router}/>
+    </NoteContextProvider>
   </React.StrictMode>
   </ChakraProvider>
 )
