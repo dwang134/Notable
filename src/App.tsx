@@ -1,13 +1,18 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import './App.css'
-import { NoteData, RawNote, Tag } from '../types/Types';
-import { v4 as uuidv4 } from 'uuid';
+import { RawNote, Tag } from '../types/Types';
+import { Box, Container, Text} from '@chakra-ui/react';
+import NoteList from '../components/NoteList';
 
+const App = () => {
 
-const App:React.FC = () => {
   return (
-    <h1>Welcome to the main page</h1>
+    <Container maxW='90vw' maxH='100vh'>
+    <Box mt={5} width='100%' height='100vh'>
+    <NoteList/>
+    </Box>
+    </Container>
   )
 }
 

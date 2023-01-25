@@ -9,7 +9,8 @@ const NoteContext = createContext<NoteContextObject>({
     tags: [],
     setTags: () => {},
     notesWithTags: {},
-    onCreateNote: ()=> {}
+    onCreateNote: ()=> {},
+    addTag: () => {}
 })
 
 // const [count, setCount] = useState(0);
@@ -23,6 +24,7 @@ type NoteContextObject = {
     setTags: (value: React.SetStateAction<Tag[]>) => void
     notesWithTags: {};
     onCreateNote: ({tags, ...data}: NoteData) => void;
+    addTag: (tag: Tag) => void;
 }
 
 export const useNoteContext = () => {
@@ -54,16 +56,19 @@ export const NoteContextProvider:React.FC<Props> = ({children}) => {
     })
     }
 
+    const addTag = (tag: Tag) => {
+        setTags(prev => [...prev, tag])
+    }
+
     const NoteContextValue:NoteContextObject = {
         notes,
         setNotes,
         tags,
         setTags,
         notesWithTags,
-        onCreateNote
+        onCreateNote,
+        addTag
     }
-
-    //Type '{ tags: Tag[]; id: string; title: string; content: string; tagIds: string[]; }[]' is not assignable to type '() => RawNote[]'.
 
     return ( 
         <NoteContext.Provider value={NoteContextValue}>

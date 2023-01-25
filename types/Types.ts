@@ -25,5 +25,5 @@ export type RawNote= {
 //obj type for tag category with id attached to corresponding note obj
 export type Tag = {
     id: string;
-    name: string;
+    label: string;
 }
