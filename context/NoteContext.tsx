@@ -1,5 +1,5 @@
 import React, {createContext, useContext, useMemo, useState} from 'react';
-import {NoteData, RawNote, Tag} from '../types/Types';
+import {TagNote, Note, NoteData, RawNote, Tag} from '../types/Types';
 import {useLocalStorage} from '../utils/useLocalStorage';
 import {v4 as uuidv4} from 'uuid';
 
@@ -8,7 +8,7 @@ const NoteContext = createContext<NoteContextObject>({
     setNotes: () => {},
     tags: [],
     setTags: () => {},
-    notesWithTags: {},
+    notesWithTags: [],
     onCreateNote: ()=> {},
     addTag: () => {}
 })
@@ -19,10 +19,10 @@ const NoteContext = createContext<NoteContextObject>({
 
 type NoteContextObject = {
     notes: RawNote [];
-    setNotes: (value: React.SetStateAction<RawNote[]>) => void
+    setNotes: (value: React.SetStateAction<RawNote[]>) => void;
     tags: Tag[];
-    setTags: (value: React.SetStateAction<Tag[]>) => void
-    notesWithTags: {};
+    setTags: (value: React.SetStateAction<Tag[]>) => void;
+    notesWithTags: TagNote[];
     onCreateNote: ({tags, ...data}: NoteData) => void;
     addTag: (tag: Tag) => void;
 }

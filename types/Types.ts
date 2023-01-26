@@ -22,8 +22,19 @@ export type RawNote= {
     id: string;
 } & RawNoteData
 
+export type TagNote = { 
+    tags: Tag[]
+} & RawNote
+
 //obj type for tag category with id attached to corresponding note obj
 export type Tag = {
     id: string;
     label: string;
 }
+
+export type SimplifiedNote = {
+    id: string;
+    title: string;
+    tags: Tag [];
+}
+

@@ -22,9 +22,7 @@ const NoteForm: React.FC = () => {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    console.log('The form has been submitted');
-    console.log(titleRef.current);
-    console.log(markdownRef.current);
+    
     if (!titleRef.current || !markdownRef.current){
 
         toast({
