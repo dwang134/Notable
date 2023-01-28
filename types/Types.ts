@@ -6,13 +6,13 @@ export type Note = {
 //obj type for form note data
 export type NoteData = {
     title: string;
-    content: string;
+    markdown: string;
     tags: Tag [];
 }
 
 export type RawNoteData = {
     title: string;
-    content: string;
+    markdown: string;
     //stores the ids of the tags (categories) instead of the actual name
     //and then conerted to actual tags for when storing as NoteData
     tagIds: string[];
@@ -22,7 +22,7 @@ export type RawNote= {
     id: string;
 } & RawNoteData
 
-export type TagNote = { 
+export type CompleteNote = { 
     tags: Tag[]
 } & RawNote
 

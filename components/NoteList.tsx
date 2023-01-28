@@ -1,9 +1,9 @@
-import { Box, Button, ButtonGroup, Card, CardBody, CardHeader, Heading, Input, SimpleGrid, Stack, Text } from '@chakra-ui/react';
+import {Box, Button, ButtonGroup, Card, CardBody, CardHeader, Heading, Input, SimpleGrid, Stack, Text, Badge, Wrap, WrapItem, Center} from '@chakra-ui/react';
 import React, {ReactEventHandler, useMemo, useState} from 'react'
 import { Link } from 'react-router-dom';
 import ReactSelect from 'react-select';
 import { useNoteContext } from '../context/NoteContext';
-import { Tag, Note, RawNote, TagNote } from '../types/Types';
+import { Tag, Note, RawNote, CompleteNote } from '../types/Types';
 import styled from 'styled-components';
 
 
@@ -14,7 +14,7 @@ const NoteList:React.FC = () => {
     const {notesWithTags, setNotes, tags, setTags} = useNoteContext();
 
     const filteredNotes = useMemo(() => {
-      return notesWithTags.filter((note: TagNote) => {
+      return notesWithTags.filter((note: CompleteNote) => {
         return (
           (title === "" ||
             note.title.toLowerCase().includes(title.toLowerCase())) &&
@@ -33,10 +33,14 @@ const NoteList:React.FC = () => {
     `;
     
     const StyledCard = styled(Card)`
-    &:hover,
-    &:focus{
-      translate
-    }
+    
+      transition: translate ease-in-out 100ms, box-shadow ease-in-out 100ms;
+
+      &:hover,
+      &:focus{
+        translate: 0 -5px;
+        box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2);
+      }
     `
 
     console.log('Filtered notes tag: ', notesWithTags);
@@ -45,7 +49,7 @@ const NoteList:React.FC = () => {
     return (
         <Box mt={8} width='100%' height='100vh'>
         <Stack direction= 'row' justify='space-between' align='center'>
-        <Text fontSize='4xl' fontWeight='bold'>Notes</Text>
+        <Heading fontSize='4xl' fontWeight='bold'>Notes</Heading>
         <ButtonGroup gap="2" mt={1}>
                 <Link to= '/new'><Button color='gray.50'colorScheme="messenger">Create</Button></Link>
                 <Link to="..">
@@ -60,7 +64,7 @@ const NoteList:React.FC = () => {
         </Stack>
         <Stack>
         <Text mb={1}>Tags</Text>
-                <Box w="100%">
+                <Box w='' >
                   <ReactSelect
                   options={tags.map(tag => {
                     return {label: tag.label, value: tag.id}
@@ -79,15 +83,26 @@ const NoteList:React.FC = () => {
                 </Box>   
         </Stack>
         {filteredNotes.map((note: Note) => (
-            <Card key={note.id} >
-            <CardHeader>
-              <Heading size= 'md'>{note.title}</Heading>
-            </CardHeader>
-            <CardBody>{note.tags.map(tag=>
-              <StyledButton color='gray.50' colorScheme='messenger'>{tag.label}</StyledButton>
-            )}
-            </CardBody>
-            </Card>
+            <Link to={`/${note.id}`}>
+              <StyledCard key={note.id} align='center'>
+              <CardHeader>
+                <Heading size= 'md'>{note.title}</Heading>
+              </CardHeader>
+              <CardBody>
+              <Stack direction={['column', 'row']} spacing='10px' >
+              <Wrap>
+                {note.tags.map(tag=>
+                  <WrapItem>
+                    <Center>
+                      <Badge color='gray.50' bg='#0078FF' px='10px' py= '5px' borderRadius= 'md'>{tag.label}</Badge>
+                    </Center>
+                  </WrapItem>
+                )}
+              </Wrap>
+              </Stack>
+              </CardBody>
+              </StyledCard>
+            </Link>
         ))}
         </SimpleGrid>
         </Box>

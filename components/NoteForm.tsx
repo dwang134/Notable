@@ -3,20 +3,25 @@ import CreatableReactSelect from 'react-select/creatable';
 import {useToast } from '@chakra-ui/react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FormEvent, useRef, useState } from 'react';
-import {NoteData, Tag} from '../types/Types';
+import {CompleteNote, NoteData, Tag} from '../types/Types';
 import { useNoteContext } from '../context/NoteContext';
 import {v4 as uuidv4} from 'uuid';
 
-type NoteFormProps = {
-  onSubmit: (data: NoteData) => void;
+interface NoteFormProps {
+  editingNote: CompleteNote;
+  noteTitle?: string;
+  noteTags?: Tag [];
+  noteMarkdown?: string;
+  noteID?: string;
+  editNoteSubmit?: (id: string, data: NoteData) => void;
 }
 
-const NoteForm: React.FC = () => {
+const NoteForm: React.FC<NoteFormProps> = ({noteTitle="", noteTags= [], noteMarkdown="", noteID, editNoteSubmit}) => {
 
   const titleRef = useRef<HTMLInputElement>(null);
   const markdownRef= useRef<HTMLTextAreaElement>(null);
   const toast = useToast();
-  const [selectedTags, setSelectedTags] = useState<Tag []>([]);
+  const [selectedTags, setSelectedTags] = useState<Tag []>(noteTags);
   const {onCreateNote, tags, setTags, addTag} = useNoteContext();
   const navigate = useNavigate();
 
@@ -33,12 +38,21 @@ const NoteForm: React.FC = () => {
         })
       
     }else{
-      onCreateNote({
-        //already made it mandatory for user on input component
-        title: titleRef.current!.value,
-        tags: selectedTags,
-        content: markdownRef.current!.value
-      })
+
+      if (editNoteSubmit && noteID){
+          editNoteSubmit(noteID, {
+            title: titleRef.current!.value,
+            tags: selectedTags,
+            markdown: markdownRef.current!.value
+          })
+      }else{
+        onCreateNote({
+          //already made it mandatory for user on input component
+          title: titleRef.current!.value,
+          tags: selectedTags,
+          markdown: markdownRef.current!.value
+        })
+      }
     }
     
     navigate('..');
@@ -52,7 +66,7 @@ const NoteForm: React.FC = () => {
             <Stack direction={["column", "row"]} spacing="24px">
               <Flex direction="column" w="55%">
                 <FormLabel>Title</FormLabel>
-                <Input placeholder= 'Enter the title' size="md" height="38px" borderColor='blackAlpha.400' isRequired ref={titleRef}/>
+                <Input defaultValue={noteTitle} placeholder= 'Enter the title' size="md" height="38px" borderColor='blackAlpha.400' isRequired ref={titleRef}/>
               </Flex>
               <Flex direction="column" w="45%">
                 <FormLabel>Tags</FormLabel>
@@ -66,7 +80,8 @@ const NoteForm: React.FC = () => {
                   options={tags.map(tag => {
                     return {label: tag.label, value: tag.id}
                   })}
-                  value={selectedTags.map((tag: Tag) => {
+                  value= {
+                    selectedTags.map((tag: Tag) => {
                     return { label: tag.label, value: tag.id }
                   })}
                   onChange={tags => {
@@ -81,7 +96,7 @@ const NoteForm: React.FC = () => {
               </Flex>
             </Stack>
             <FormLabel>Body</FormLabel>
-            <Textarea isRequired borderColor='blackAlpha.400' height="28rem" ref={markdownRef} placeholder="Enter the content for the notes here!" />
+            <Textarea defaultValue={noteMarkdown} isRequired borderColor='blackAlpha.400' height="28rem" ref={markdownRef} placeholder="Enter the content for the notes here!" />
             <Flex justifyContent="flex-end">
               <ButtonGroup gap="2" mt={1}>
                 <Button colorScheme="messenger" type='submit'>Save</Button>

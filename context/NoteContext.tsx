@@ -1,5 +1,5 @@
 import React, {createContext, useContext, useMemo, useState} from 'react';
-import {TagNote, Note, NoteData, RawNote, Tag} from '../types/Types';
+import {CompleteNote, Note, NoteData, RawNote, Tag} from '../types/Types';
 import {useLocalStorage} from '../utils/useLocalStorage';
 import {v4 as uuidv4} from 'uuid';
 
@@ -10,7 +10,8 @@ const NoteContext = createContext<NoteContextObject>({
     setTags: () => {},
     notesWithTags: [],
     onCreateNote: ()=> {},
-    addTag: () => {}
+    getNoteByID: () => undefined,
+    addTag: () => {},
 })
 
 // const [count, setCount] = useState(0);
@@ -22,8 +23,9 @@ type NoteContextObject = {
     setNotes: (value: React.SetStateAction<RawNote[]>) => void;
     tags: Tag[];
     setTags: (value: React.SetStateAction<Tag[]>) => void;
-    notesWithTags: TagNote[];
+    notesWithTags: CompleteNote[];
     onCreateNote: ({tags, ...data}: NoteData) => void;
+    getNoteByID: (noteID: string) => CompleteNote | undefined;
     addTag: (tag: Tag) => void;
 }
 
@@ -56,9 +58,14 @@ export const NoteContextProvider:React.FC<Props> = ({children}) => {
     })
     }
 
+    const getNoteByID= (noteID: string)=> {
+        return notesWithTags.find(n => n.id=== noteID);
+    }
+
     const addTag = (tag: Tag) => {
         setTags(prev => [...prev, tag])
     }
+
 
     const NoteContextValue:NoteContextObject = {
         notes,
@@ -67,7 +74,8 @@ export const NoteContextProvider:React.FC<Props> = ({children}) => {
         setTags,
         notesWithTags,
         onCreateNote,
-        addTag
+        getNoteByID,
+        addTag,
     }
 
     return ( 
