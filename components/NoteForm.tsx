@@ -8,7 +8,6 @@ import { useNoteContext } from '../context/NoteContext';
 import {v4 as uuidv4} from 'uuid';
 
 interface NoteFormProps {
-  editingNote: CompleteNote;
   noteTitle?: string;
   noteTags?: Tag [];
   noteMarkdown?: string;
