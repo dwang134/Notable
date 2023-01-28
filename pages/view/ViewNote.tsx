@@ -2,7 +2,9 @@ import { Badge, Box, Button, ButtonGroup, Center, Container, Heading, Stack, Tex
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useNoteContext } from '../../context/NoteContext';
 import { CompleteNote, RawNote, Tag } from '../../types/Types';
-import ReactMarkdown from 'react-markdown'
+import ReactMarkdown from 'react-markdown';
+import ChakraUIRenderer from 'chakra-ui-markdown-renderer';
+
 
 
 const ViewNote:React.FC = () => {
@@ -45,7 +47,7 @@ const ViewNote:React.FC = () => {
               ))}
       </Wrap>
     </Box>
-    <ReactMarkdown>{note.markdown}</ReactMarkdown>
+    <ReactMarkdown components={ChakraUIRenderer()} children={note.markdown} skipHtml />;
     </Box>  
     </Container>
   )

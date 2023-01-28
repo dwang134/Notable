@@ -26,7 +26,7 @@ const NoteList:React.FC = () => {
             ))
         )
       })
-    }, [title, tags, notesWithTags])
+    }, [title, searchTags, notesWithTags])
 
     const StyledButton= styled(Button)`
       &:hover {
@@ -50,6 +50,18 @@ const NoteList:React.FC = () => {
         return prevTags.filter((tag)=> tag.id!== tagID);
       })
     }
+
+    const updateTagLabel = (id: string, labelValue: string) => {
+      setTags(prevTags=> {
+        return prevTags.map((tag: Tag)=> {
+          if (tag.id === id){
+            return {...tag, label: labelValue}
+          }else{
+            return tag;
+          }
+        })
+      })
+    } 
 
     console.log('Filtered notes tag: ', notesWithTags);
     console.log('result: ', filteredNotes);
@@ -122,7 +134,7 @@ const NoteList:React.FC = () => {
             <Stack>
             {tags.map((tag: Tag)=> (
               <Stack direction='row' align='center'>
-                <Input defaultValue={tag.label}/>
+                <Input defaultValue={tag.label} onChange= {e=> updateTagLabel(tag.id, e.target.value)}/>
                 <CloseIcon onClick={()=> deleteTagByID(tag.id)}_hover={{cursor: 'pointer'}} />
               </Stack>
             ))}
