@@ -1,4 +1,5 @@
-import {Box, Button, ButtonGroup, Card, CardBody, CardHeader, Heading, Input, SimpleGrid, Stack, Text, Badge, Wrap, WrapItem, Center} from '@chakra-ui/react';
+import {Box, Button, ButtonGroup, Card, CardBody, CardHeader, Heading, Input, SimpleGrid, Stack, Text, Badge, Wrap, WrapItem, Center, useDisclosure, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay} from '@chakra-ui/react';
+import {CloseIcon} from '@chakra-ui/icons';
 import React, {ReactEventHandler, useMemo, useState} from 'react'
 import { Link } from 'react-router-dom';
 import ReactSelect from 'react-select';
@@ -12,6 +13,7 @@ const NoteList:React.FC = () => {
     const [title, setTitle] = useState<string>('');
     const [searchTags, setSearchTags] = useState<Tag []>([]);
     const {notesWithTags, setNotes, tags, setTags} = useNoteContext();
+    const { isOpen, onOpen, onClose } = useDisclosure();
 
     const filteredNotes = useMemo(() => {
       return notesWithTags.filter((note: CompleteNote) => {
@@ -43,6 +45,12 @@ const NoteList:React.FC = () => {
       }
     `
 
+    const deleteTagByID = (tagID: string) => {
+      setTags(prevTags=> {
+        return prevTags.filter((tag)=> tag.id!== tagID);
+      })
+    }
+
     console.log('Filtered notes tag: ', notesWithTags);
     console.log('result: ', filteredNotes);
 
@@ -53,7 +61,7 @@ const NoteList:React.FC = () => {
         <ButtonGroup gap="2" mt={1}>
                 <Link to= '/new'><Button color='gray.50'colorScheme="messenger">Create</Button></Link>
                 <Link to="..">
-                  <Button colorScheme="gray" variant='outline' bg='gray.50'>Edit Tags</Button>
+                  <Button onClick={onOpen} colorScheme="gray" variant='outline' bg='gray.50'>Edit Tags</Button>
                 </Link> 
         </ButtonGroup>
         </Stack>
@@ -105,6 +113,28 @@ const NoteList:React.FC = () => {
             </Link>
         ))}
         </SimpleGrid>
+        <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Edit Tags</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Stack>
+            {tags.map((tag: Tag)=> (
+              <Stack direction='row' align='center'>
+                <Input defaultValue={tag.label}/>
+                <CloseIcon onClick={()=> deleteTagByID(tag.id)}_hover={{cursor: 'pointer'}} />
+              </Stack>
+            ))}
+            </Stack>
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme='blue' mr={3} onClick={onClose}>
+              Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+        </Modal>
         </Box>
     )
 }

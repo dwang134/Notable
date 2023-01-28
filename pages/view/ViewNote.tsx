@@ -1,5 +1,5 @@
 import { Badge, Box, Button, ButtonGroup, Center, Container, Heading, Stack, Text, Wrap, WrapItem } from '@chakra-ui/react';
-import { Link, Navigate, useParams } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useNoteContext } from '../../context/NoteContext';
 import { CompleteNote, RawNote, Tag } from '../../types/Types';
 import ReactMarkdown from 'react-markdown'
@@ -13,12 +13,14 @@ const ViewNote:React.FC = () => {
 
   const note = getNoteByID(noteID!);
 
+  const navigate = useNavigate();
+
   if (!note) return <Navigate to= "/" replace/>
 
-  const deleteNote= () => {
-    //gets the id of note
-    //use setnotes to update the notes state
-
+  const deleteNote= (id: string) => {
+    setNotes(prevNotes => {
+      return prevNotes.filter(note => note.id !== id);
+    })
   }
 
   return (
@@ -29,7 +31,7 @@ const ViewNote:React.FC = () => {
           <Heading mb={3}>{note.title}</Heading>
         <ButtonGroup gap='2' mt='1'>
         <Link to='edit'><Button color='gray.50'colorScheme="messenger">Edit</Button></Link>
-        <Button onClick={deleteNote()} colorScheme="red" variant='outline' >Delete Tags</Button>
+        <Button onClick={()=> {deleteNote(note.id); navigate('/')}} colorScheme="red" variant='outline' >Delete Note</Button>
         <Link to='..'><Button colorScheme="gray" variant='outline' borderColor='blackAlpha.500'>Back</Button></Link>
         </ButtonGroup>
       </Stack>
